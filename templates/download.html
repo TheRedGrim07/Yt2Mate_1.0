@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Download Video</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #222; color: white; padding: 30px; }
+        .card { background: #333; padding: 20px; border-radius: 10px; display: inline-block; max-width: 600px; width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
+        .row { background: #444; margin: 10px 0; padding: 15px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { background: #28a745; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn:hover { background: #218838; }
+        a { color: #aaa; margin-top: 20px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <img src="{{ video.thumbnail }}" alt="Thumbnail">
+        <h2>{{ video.title }}</h2>
+        <p>⏱️ Duration: {{ video.duration }}</p>
+
+        <hr style="border-color: #555;">
+        
+        {% for fmt in video.formats %}
+        <div class="row">
+            <div style="text-align: left;">
+                <strong>{{ fmt.resolution }}</strong><br>
+                <small style="color: #ccc;">MP4 • {{ fmt.filesize }} MB</small>
+            </div>
+            
+            <form action="/download_file" method="POST">
+                <input type="hidden" name="url" value="{{ video.original_url }}">
+                <input type="hidden" name="format_id" value="{{ fmt.format_id }}">
+                <button type="submit" class="btn">Download ⬇️</button>
+            </form>
+        </div>
+        {% endfor %}
+
+        {% if not video.formats %}
+            <p>⚠️ No standard MP4s found.</p>
+        {% endif %}
+
+        <a href="/">Search Another</a>
+    </div>
+
+</body>
+</html>
